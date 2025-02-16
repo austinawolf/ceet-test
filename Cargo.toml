@@ -6,3 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+cc = "1.0"   # Used for compiling C code
+
+[dev-dependencies]
+just = "1.39.0"
