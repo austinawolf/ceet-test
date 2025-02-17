@@ -1,6 +1,7 @@
 use goblin::elf::Elf;
 use std::fs::File;
-use std::io::{self, Read};
+use std::io::{Read};
+use libloading::{Library, Symbol};
 
 
 // extern "C" {
@@ -36,11 +37,33 @@ fn main() {
     match Elf::parse(&buffer) {
         Ok(elf) => {
             println!("Global functions in {}:", filename);
+
+            // Load the shared library once (optimization)
+            let lib = unsafe { Library::new(filename) };
+            if let Err(e) = lib {
+                eprintln!("Failed to load library {}: {}", filename, e);
+                return;
+            }
+            let lib = lib.unwrap(); // Safe because we checked above
+
             for sym in &elf.syms {
-                if sym.is_function() {
-                    if let Some(Ok(name)) = elf.strtab.get(sym.st_name) {
-                        if !name.is_empty() {
-                            println!("\t{}", name);
+                if !sym.is_function() {
+                    continue;
+                }
+
+                if let Some(name) = elf.strtab.get_at(sym.st_name) {
+                    if !name.starts_with("test_") {
+                        continue;
+                    }
+
+                    println!("-> {}", name);
+
+                    // Load and execute the function dynamically
+                    unsafe {
+                        let func: Result<Symbol<unsafe extern "C" fn()>, _> = lib.get(name.as_bytes());
+                        match func {
+                            Ok(f) => f(),
+                            Err(e) => eprintln!("Failed to find function '{}': {}", name, e),
                         }
                     }
                 }
@@ -50,11 +73,5 @@ fn main() {
             eprintln!("Failed to parse ELF file: {}", e);
         }
     }
-
-    // unsafe {
-    //     let lib = Library::new("./libtest.so").expect("Failed to load library");
-    //     let f: Symbol<unsafe extern "C" fn()> = lib.get(b"test_asdf").expect("Failed to find function");
-    //     f()
-    // }
 
 }
