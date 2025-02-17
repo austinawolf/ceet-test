@@ -52,7 +52,7 @@ fn main() {
                 }
 
                 if let Some(name) = elf.strtab.get_at(sym.st_name) {
-                    if !name.starts_with("test_") {
+                    if !name.starts_with("_ctest_hook__") {
                         continue;
                     }
 

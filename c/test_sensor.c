@@ -1,49 +1,15 @@
 #include <stdio.h>
-#include <setjmp.h>
 #include <stdbool.h>
-
-static jmp_buf _test_env;
-
-static int _counter = 0;
+#include "ctest.h"
 
 
-static void _setup(void)
+TEST(asdf)
 {
-    int ret = setjmp(_test_env);
-
-    if (ret != 0)
-    {
-        printf("Test failed\n");
-    } 
+    ctest_assert(true);
 }
 
-static void _assert(bool cond)
+
+TEST(fdsd)
 {
-    if (cond) 
-    {
-        return;
-    }
-
-    printf("ASSERT\n");
-    longjmp(_test_env, 1);
-}
-
-void test_asdf(void) 
-{
-    _setup();
-    
-    printf("running test_asdf\n");
-    printf("counter: %d\n", _counter++);
-
-    _assert(true);
-
-}
-
-void test_fdas(void) 
-{
-    _setup();
-    printf("running test_fdas\n");
-    printf("counter: %d\n", _counter++);
-
-    _assert(false);
+    ctest_assert(false);
 }
