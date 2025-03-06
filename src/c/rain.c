@@ -1,4 +1,4 @@
-#include "ctest.h"
+#include "rain.h"
 #include <setjmp.h>
 
 static jmp_buf env;
@@ -6,7 +6,6 @@ static jmp_buf env;
 
 void ctest_test_runner(ctype_test_function_t f)
 {
-
     printf("Starting test...\n");
 
     int ret = setjmp(env);
