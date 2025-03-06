@@ -1,40 +1,42 @@
 use std::fs::File;
-use libloading::Library;
+use libloading::{Library, Symbol};
 use goblin::elf::Elf;
 use std::io::Read;
 
-
 pub struct CLibrary {
     filename: String,
+    buffer: Box<[u8]>,
+    lib: Library,
 }
 
 impl CLibrary {
-
     pub fn new(filename: &str) -> Self {
+        let mut file = File::open(filename).unwrap_or_else(|e| {
+            panic!("Failed to open file {}: {}", &filename, e);
+        });
+
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer).unwrap_or_else(|e| {
+            panic!("Failed to read file {}: {}", &filename, e);
+        });
+
+        let buffer = buffer.into_boxed_slice(); // Convert to heap storage first
+
+        // Load the shared library before creating elf
+        let lib = unsafe { Library::new(&filename).unwrap_or_else(|e| {
+            panic!("Failed to load library {}: {}", &filename, e);
+        }) };
+
         Self {
             filename: filename.to_string(),
+            buffer,
+            lib,
         }
     }
 
     pub fn get_functions(&self) -> Vec<String> {
-        // Open the shared library file
-        let mut file = File::open(&self.filename).unwrap_or_else(|e| {
-            panic!("Failed to open file {}: {}", &self.filename, e);
-        });
-
-        // Load the shared library
-        let _lib = unsafe { Library::new(&self.filename).unwrap_or_else(|e| {
-            panic!("Failed to load library {}: {}", &self.filename, e);
-        }) };
-
-        // Read the file contents into a buffer
-        let mut buffer = Vec::new();
-        file.read_to_end(&mut buffer).unwrap_or_else(|e| {
-            panic!("Failed to read file {}: {}", &self.filename, e);
-        });
-
         // Parse the ELF structure from the buffer
-        let elf = Elf::parse(&buffer).unwrap_or_else(|e| {
+        let elf = Elf::parse(&self.buffer).unwrap_or_else(|e| {
             panic!("Failed to parse ELF for file {}: {:?}", &self.filename, e);
         });
 
@@ -50,5 +52,16 @@ impl CLibrary {
         }
 
         function_names
+    }
+
+    pub fn execute_function(&self, function_name: &str) {
+        unsafe {
+            let func: Result<Symbol<unsafe extern "C" fn()>, _>
+                = self.lib.get(function_name.as_bytes());
+            match func {
+                Ok(f) => f(),
+                Err(e) => eprintln!("Failed to find function '{}': {}", function_name, e),
+            }
+        }
     }
 }
