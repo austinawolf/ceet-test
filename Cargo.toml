@@ -1,14 +1,10 @@
 [package]
-name = "ceet-test"
+name = "rain-test"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-cc = "1.0"   # Used for compiling C code
 goblin = "0.9.3"
 libloading = "0.8.6"
 
 [dev-dependencies]
-just = "1.39.0"

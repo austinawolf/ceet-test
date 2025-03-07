@@ -26,3 +26,5 @@ Cargo.lock
 *.so
 
 *.idea
+
+example-project/.working/*
