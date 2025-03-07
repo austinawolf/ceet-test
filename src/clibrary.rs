@@ -3,10 +3,11 @@ use libloading::{Library, Symbol};
 use goblin::elf::Elf;
 use std::io::Read;
 
+
 pub struct CLibrary {
     filename: String,
-    buffer: Box<[u8]>,
     lib: Library,
+    buffer: Vec<u8>,
 }
 
 impl CLibrary {
@@ -20,8 +21,6 @@ impl CLibrary {
             panic!("Failed to read file {}: {}", &filename, e);
         });
 
-        let buffer = buffer.into_boxed_slice(); // Convert to heap storage first
-
         // Load the shared library before creating elf
         let lib = unsafe { Library::new(&filename).unwrap_or_else(|e| {
             panic!("Failed to load library {}: {}", &filename, e);
@@ -29,8 +28,8 @@ impl CLibrary {
 
         Self {
             filename: filename.to_string(),
-            buffer,
             lib,
+            buffer,
         }
     }
 
