@@ -1,17 +1,20 @@
-project('test_sensor', 'c')
-cc = meson.get_compiler('c')  # Fix: Use meson.get_compiler()
+project('REPLACE_PROJECT_NAME', 'c')
+project_name = 'REPLACE_PROJECT_NAME'
+
+cc = meson.get_compiler('c')
 
 # Define include directory
-inc_dirs = include_directories('/home/awolf/dev/rain-test/c/')
+inc_dirs = include_directories(
+REPLACE_INCLUDES
+)
 
 sources = [
-'/home/awolf/dev/rain-test/example-project/tests/test_sensor.c',
-'/home/awolf/dev/rain-test/c/rain.c',
+REPLACE_SOURCES
 ]
 
 # Create shared library
 shared_lib = shared_library(
-'test_sensor',
+project_name,
 sources,
 include_directories: inc_dirs,
 c_args: ['-fPIC'],

@@ -1,37 +1,47 @@
 mod clibrary;
 mod cbuild;
-
+mod test_build;
 use clibrary::CLibrary;
-use crate::cbuild::CBuild;
+use crate::test_build::TestBuild;
+
 
 fn main() {
-    // Hardcoded shared library path
-    let name = "test_sensor";
-    let build_dir = "/home/awolf/dev/rain-test/example-project/.working/test_sensor";
-    let sources = vec![
-        "/home/awolf/dev/rain-test/example-project/tests/test_sensor.c",
-        "/home/awolf/dev/rain-test/c/rain.c"
-    ];
-    let includes = vec![
-        "/home/awolf/dev/rain-test/c/"
+    let build_dir = String::from("/home/awolf/dev/rain-test/example-project/.working/");
+
+    let tests = vec![
+        String::from("/home/awolf/dev/rain-test/example-project/tests/test_sensor.c"),
+        String::from("/home/awolf/dev/rain-test/example-project/tests/test_sensor2.c"),
+        String::from("/home/awolf/dev/rain-test/example-project/tests/test_sensor3.c"),
     ];
 
-    let mut cbuild = CBuild::new(name, build_dir);
-    cbuild.add_sources(sources);
-    cbuild.add_includes(includes);
+    for test in &tests {
+        let other_sources = vec![
+            String::from("/home/awolf/dev/rain-test/c/rain.c"),
+        ];
+        let other_includes = vec![
+            String::from("/home/awolf/dev/rain-test/c/")
+        ];
 
-    cbuild.write_meson_build();
-    cbuild.build();
-    cbuild.compile();
+        let test_build = TestBuild::new(test.clone(),
+                                    build_dir.clone(),
+                                    other_sources.clone(),
+                                    other_includes.clone());
 
-    let filename = cbuild.get_lib_path();
-    let lib = CLibrary::new(&filename);
+        let lib_path = test_build.build();
 
-    let functions = lib.get_functions();
-    for function in functions {
-        if function.starts_with("_ctest") {
-            println!("Executing: {:?}", function);
-            lib.execute_function(&function);
+        println!("Got: {:?}", lib_path);
+
+        let lib = CLibrary::new(&lib_path);
+
+
+        let functions = lib.get_functions();
+        for function in functions {
+            if function.starts_with("_ctest") {
+                println!("Executing: {:?}", function);
+                lib.execute_function(&function);
+            }
         }
     }
+
+
 }
