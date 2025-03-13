@@ -26,8 +26,10 @@ fn main() {
                                     build_dir.clone(),
                                     other_sources.clone(),
                                     other_includes.clone());
+        test_build.build();
+        test_build.compile();
 
-        let lib_path = test_build.build();
+        let lib_path = test_build.get_lib_path();
 
         println!("Got: {:?}", lib_path);
 

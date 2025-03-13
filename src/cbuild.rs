@@ -43,8 +43,11 @@ impl CBuild {
         file.write_all(build_file_contents.as_bytes()).unwrap(); // Write bytes to file
     }
 
-    pub fn build(&self) {
+    pub fn generate(&self) {
         self.write_meson_build();
+    }
+
+    pub fn build(&self) {
 
         let _ = Command::new("meson") // Replace with "dir" on Windows
             .args(&["setup", "build"]) // Equivalent to `ls` on Windows
