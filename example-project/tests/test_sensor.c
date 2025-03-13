@@ -5,11 +5,11 @@
 
 TEST(asdf)
 {
-    ctest_assert(true);
+    rain_test_assert(true);
 }
 
 
 TEST(fdsd)
 {
-    ctest_assert(false);
+    rain_test_assert(false);
 }

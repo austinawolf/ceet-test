@@ -63,4 +63,45 @@ impl CLibrary {
             }
         }
     }
+
+    pub fn test(&self, function_name: &str) {
+
+        #[repr(C)]
+        struct RainTestResults {
+            magic: i32,
+            assert: bool
+        }
+
+        type CtypeTestFunction = unsafe extern "C" fn();
+        type RainTestRunFunction = unsafe extern "C" fn(CtypeTestFunction, *mut RainTestResults) -> i32;
+
+        unsafe {
+            // Load the test function symbol from the library
+            let test_func: Symbol<CtypeTestFunction> =
+                self.lib.get(&function_name.as_bytes()).expect("Failed to load test function");
+
+            let runner_func: Symbol<RainTestRunFunction> =
+                self.lib.get(b"rain_test_run").expect("Failed to load rain_test_run function");
+
+            // Allocate the test results struct
+            let mut results = RainTestResults {
+                magic: 0xAA,
+                assert: false
+            };
+
+            // Execute the function
+            let return_code = runner_func(*test_func, &mut results);
+
+            if (results.assert)
+            {
+                println!("test failed!");
+            }
+            else
+            {
+                println!("test success!");
+            }
+
+            println!("rain_test_run returned: {}", return_code);
+        }
+    }
 }
