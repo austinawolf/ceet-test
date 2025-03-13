@@ -1,7 +1,9 @@
+use std::ffi::CStr;
 use std::fs::File;
 use libloading::{Library, Symbol};
 use goblin::elf::Elf;
 use std::io::Read;
+use std::os::raw::c_char;
 
 
 pub struct CLibrary {
@@ -69,7 +71,9 @@ impl CLibrary {
         #[repr(C)]
         struct RainTestResults {
             magic: i32,
-            assert: bool
+            assert: bool,
+            file: *const c_char,
+            lineno: i32,
         }
 
         type CtypeTestFunction = unsafe extern "C" fn();
@@ -86,7 +90,9 @@ impl CLibrary {
             // Allocate the test results struct
             let mut results = RainTestResults {
                 magic: 0xAA,
-                assert: false
+                assert: false,
+                file: "".as_ptr() as *const c_char,
+                lineno: 0,
             };
 
             // Execute the function
@@ -94,7 +100,11 @@ impl CLibrary {
 
             if (results.assert)
             {
-                println!("test failed!");
+                let file = CStr::from_ptr(results.file);
+                match file.to_str() {
+                    Ok(rust_str) => println!("test failed! {}:{}", rust_str, results.lineno),
+                    Err(_) => println!("Invalid UTF-8 string"),
+                }
             }
             else
             {
