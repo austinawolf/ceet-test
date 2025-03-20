@@ -1,15 +1,17 @@
 title = "Rain Test"
-working_dir = "/home/awolf/dev/rain-test/example-project/.working/"
-tests = [
-    "/home/awolf/dev/rain-test/example-project/tests/test_sensor.c",
-    "/home/awolf/dev/rain-test/example-project/tests/test_sensor2.c",
 
-]
+[environment]
 sources = [
     "/home/awolf/dev/rain-test/c/rain.c",
 ]
 includes = [
     "/home/awolf/dev/rain-test/c/",
 ]
+working_dir = "/home/awolf/dev/rain-test/example-project/.working/"
+
+[test_sensor]
+test = "/home/awolf/dev/rain-test/example-project/tests/test_sensor.c"
+
+
 
 

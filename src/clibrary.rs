@@ -98,7 +98,7 @@ impl CLibrary {
             // Execute the function
             let return_code = runner_func(*test_func, &mut results);
 
-            if (results.assert)
+            if results.assert
             {
                 let file = CStr::from_ptr(results.file);
                 match file.to_str() {

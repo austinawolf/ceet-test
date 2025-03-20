@@ -15,7 +15,7 @@ fn test() {
 
     for test in &settings.tests {
         let run_config = RunConfig {
-            test: test.clone(),
+            test: test.test_path.clone(),
             working_dir: settings.working_dir.clone(),
             sources: settings.sources.clone(),
             includes: settings.includes.clone(),
