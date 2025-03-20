@@ -59,7 +59,7 @@ impl CBuild {
     }
 
     pub fn compile(&self) {
-        let _ = Command::new("meson")
+        let output = Command::new("meson")
             .args(&["compile", "-C", "build"])
             .current_dir(&self.build_dir)
             .output()

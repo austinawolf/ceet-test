@@ -3,13 +3,13 @@
 #include "rain.h"
 
 
-TEST(asdf)
+TEST(test_success2)
 {
-    ctest_assert(true);
+    ASSERT(true);
 }
 
 
-TEST(fdsd)
+TEST(test_fail2)
 {
-    ctest_assert(false);
+    ASSERT(false);
 }

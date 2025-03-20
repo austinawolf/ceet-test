@@ -6,5 +6,4 @@ edition = "2021"
 [dependencies]
 goblin = "0.9.3"
 libloading = "0.8.6"
-
-[dev-dependencies]
+toml_edit = "0.22.24"

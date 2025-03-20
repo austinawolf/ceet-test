@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::{Path};
 use crate::cbuild::CBuild;
+use crate::run_config::RunConfig;
 
 pub struct TestBuild {
     test_file: String,
@@ -9,6 +10,15 @@ pub struct TestBuild {
 }
 
 impl TestBuild {
+    pub fn from_run_config(run_config: RunConfig) -> Self {
+        Self::new(
+            run_config.test,
+            run_config.working_dir,
+            run_config.sources,
+            run_config.includes,
+        )
+    }
+
     pub fn new(test_file: String, working_dir: String, sources: Vec<String>, includes: Vec<String>) -> Self {
         let name = Path::new(&test_file).file_stem().unwrap().to_str().unwrap();
         let build_dir = Path::new(&working_dir).join(name).to_str().unwrap().to_string();

@@ -13,7 +13,7 @@
 
 
 #define TEST(__function_name__)             \
-void CONCAT(TEST_HOOK_PREFIX, __function_name__)(void)
+void CONCAT(CONCAT(CONCAT(TEST_HOOK_PREFIX, __LINE__), __), __function_name__)(void)
 
 #define ASSERT(__condition__)   rain_test_assert(__condition__, __FILE__, __LINE__)
 
