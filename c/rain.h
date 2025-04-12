@@ -9,7 +9,7 @@
 
 #define _CONCAT(a, b) a##b
 #define CONCAT(a, b) _CONCAT(a, b)
-#define TEST_HOOK_PREFIX    _ctest_hook__
+#define TEST_HOOK_PREFIX    _rain_test_hook__
 
 
 #define TEST(__function_name__)             \

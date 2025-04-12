@@ -33,7 +33,7 @@ fn test() {
 
         let functions = lib.get_functions();
         for function in functions {
-            if function.starts_with("_ctest") {
+            if function.starts_with("_rain_test_hook__") {
                 println!("Executing: {:?}", function);
                 lib.test(&function);
             }

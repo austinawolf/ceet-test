@@ -12,6 +12,8 @@ working_dir = "/home/awolf/dev/rain-test/example-project/.working/"
 [test_sensor]
 test = "/home/awolf/dev/rain-test/example-project/tests/test_sensor.c"
 
+[test_sensor2]
+test = "/home/awolf/dev/rain-test/example-project/tests/test_sensor2.c"
 
-
-
+[test_sensor3]
+test = "/home/awolf/dev/rain-test/example-project/tests/test_sensor3.c"

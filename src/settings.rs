@@ -35,9 +35,9 @@ impl Settings {
         let doc = string.parse::<DocumentMut>().expect("Invalid config file");
 
         let title = doc["title"].as_str().unwrap();
-        let working_dir = doc["working_dir"].as_str().unwrap();
-        let sources = doc["sources"].as_array().unwrap();
-        let includes = doc["includes"].as_array().unwrap();
+        let working_dir = doc["environment"]["working_dir"].as_str().unwrap();
+        let sources = doc["environment"]["sources"].as_array().unwrap();
+        let includes = doc["environment"]["includes"].as_array().unwrap();
 
         let test_names: Vec<String>  = doc.iter()
             .filter_map(|(key, _value)| {
@@ -60,7 +60,6 @@ impl Settings {
                 if let Item::Value(value) = item {
                     if let Value::String(message) = value {
                         let test_path = message.value();
-                        println!("{}", string);
                         let module_settings = TestSettings {
                             name,
                             test_path: test_path.to_string(),
@@ -90,6 +89,8 @@ mod tests {
     fn test_from_string() {
         let toml_data = r#"
             title = "Test Project"
+
+            [environment]
             working_dir = "/home/user/project"
             sources = ["src/main.rs", "src/lib.rs"]
             includes = ["include/", "deps/"]
